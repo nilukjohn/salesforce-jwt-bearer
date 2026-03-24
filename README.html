@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT Bearer Token Generator — Client Instructions</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181b24;
+    --surface2: #1f2330;
+    --border: #2a2e3b;
+    --text: #e4e6ed;
+    --text-muted: #8b8fa3;
+    --accent: #f59e0b;
+    --accent-bg: rgba(245,158,11,0.08);
+    --accent-border: rgba(245,158,11,0.2);
+    --green: #10b981;
+    --green-bg: rgba(16,185,129,0.08);
+    --green-border: rgba(16,185,129,0.2);
+    --blue: #4a9eff;
+    --blue-bg: rgba(74,158,255,0.08);
+    --blue-border: rgba(74,158,255,0.2);
+    --purple: #a78bfa;
+    --purple-bg: rgba(167,139,250,0.08);
+    --purple-border: rgba(167,139,250,0.2);
+    --code-bg: #12151e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 48px 24px 80px;
+  }
+
+  .container { max-width: 880px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 100px;
+  }
+  .badge-amber { background: var(--accent-bg); border: 1px solid var(--accent-border); color: var(--accent); }
+  .badge-green { background: var(--green-bg);  border: 1px solid var(--green-border);  color: var(--green); }
+
+  h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); margin-bottom: 8px; }
+  h1 span { color: var(--accent); }
+
+  .subtitle { color: var(--text-muted); font-size: 15px; }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 52px; }
+
+  h2 {
+    font-size: 17px; font-weight: 700; color: var(--text);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  h2 .icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    background: var(--accent-bg); border: 1px solid var(--accent-border); flex-shrink: 0;
+  }
+
+  p { color: var(--text-muted); margin-bottom: 14px; }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;
+  }
+
+  /* ── Inline code ── */
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── Tables ── */
+  .table-wrap { overflow: hidden; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+  th {
+    text-align: left; padding: 10px 16px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); background: var(--surface2); border-bottom: 1px solid var(--border);
+  }
+
+  td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td .muted { color: var(--text-muted); font-size: 13px; }
+
+  /* ── Audience highlight row ── */
+  tr.aud-sandbox td { background: rgba(74,158,255,0.04); }
+  tr.aud-prod    td { background: rgba(16,185,129,0.04); }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-bottom: 16px;
+  }
+
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 16px; background: var(--surface2); border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted);
+  }
+
+  .lang-tag {
+    font-size: 10px; padding: 2px 8px; border-radius: 4px;
+    background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border);
+  }
+  .lang-tag.json { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+
+  pre {
+    padding: 18px 20px; overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px; line-height: 1.65; color: #c9d1d9;
+  }
+
+  pre .comment { color: #6a7383; }
+  pre .string  { color: #9ecbff; }
+  pre .var     { color: var(--accent); }
+  pre .val     { color: var(--green); }
+  pre .placeholder { color: var(--text-muted); font-style: italic; }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 16px; }
+
+  .step { display: flex; gap: 16px; align-items: flex-start; }
+
+  .step-num {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent-bg); border: 1px solid var(--accent-border); color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+  }
+
+  .step-body { flex: 1; }
+  .step-body strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 8px; }
+  .step-body p { margin: 0 0 8px; font-size: 13px; }
+
+  /* ── Claims grid ── */
+  .claims-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .claim-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px;
+  }
+
+  .claim-key { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+  .claim-desc { font-size: 13px; color: var(--text-muted); }
+
+  /* ── Audience org type cards ── */
+  .aud-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+
+  .aud-card {
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .aud-card.sandbox { background: var(--blue-bg); border: 1px solid var(--blue-border); }
+  .aud-card.prod    { background: var(--green-bg); border: 1px solid var(--green-border); }
+
+  .aud-card .aud-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .aud-card.sandbox .aud-label { color: var(--blue); }
+  .aud-card.prod    .aud-label { color: var(--green); }
+
+  .aud-card .aud-format {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted);
+    margin-bottom: 6px; word-break: break-all;
+  }
+  .aud-card .aud-example {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);
+    background: var(--code-bg); padding: 4px 8px; border-radius: 5px; word-break: break-all;
+    display: block;
+  }
+
+  /* ── Field tags ── */
+  .field-tag {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 2px 8px; border-radius: 5px; font-weight: 600;
+  }
+  .tag-green  { background: var(--green-bg);   color: var(--green);  border: 1px solid var(--green-border); }
+  .tag-blue   { background: var(--blue-bg);    color: var(--blue);   border: 1px solid var(--blue-border); }
+  .tag-amber  { background: var(--accent-bg);  color: var(--accent); border: 1px solid var(--accent-border); }
+  .tag-subtle { background: var(--surface2);   color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── Callouts ── */
+  .callout {
+    display: flex; gap: 12px; padding: 14px 18px;
+    border-radius: 10px; font-size: 13.5px; margin-bottom: 16px;
+  }
+  .callout.info  { background: var(--blue-bg);   border: 1px solid var(--blue-border);   color: var(--blue); }
+  .callout.warn  { background: var(--accent-bg); border: 1px solid var(--accent-border); color: var(--accent); }
+  .callout .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout p     { color: inherit; margin: 0; }
+
+  /* ── Prereq list ── */
+  .prereq-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .prereq-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text); }
+  .prereq-list li .check {
+    width: 20px; height: 20px; border-radius: 6px;
+    background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── Notes list ── */
+  .notes-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .notes-list li { font-size: 13.5px; color: var(--text-muted); display: flex; gap: 10px; align-items: flex-start; }
+  .notes-list li::before { content: '→'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+  /* ── Reference link ── */
+  .ref-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--purple-bg); border: 1px solid var(--purple-border);
+    color: var(--purple); text-decoration: none;
+    padding: 10px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 500;
+    transition: opacity 0.15s;
+  }
+  .ref-link:hover { opacity: 0.8; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; font-size: 12px; color: var(--text-muted);
+    margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border);
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── Language Tabs ── */
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text-muted); transition: all 0.15s; font-family: inherit;
+  }
+  .tab-btn:hover { border-color: var(--accent-border); color: var(--text); }
+  .tab-btn.active { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  @media (max-width: 620px) {
+    .claims-grid, .aud-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge-row">
+      <span class="badge badge-amber">Salesforce JWT Bearer Flow</span>
+      <span class="badge badge-green">Sandbox &amp; Production</span>
+    </div>
+    <h1>JWT Bearer Token <span>Generator</span></h1>
+    <p class="subtitle">Client instructions for generating a signed RS256 JWT assertion and exchanging it for a Salesforce access token. Compatible with both Sandbox and Production orgs.</p>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="section">
+    <h2><span class="icon">✅</span> Prerequisites</h2>
+    <p>Choose <strong>one</strong> runtime — all three use the same <code>jwt.properties</code> config file:</p>
+    <div class="table-wrap" style="margin-bottom:16px">
+      <table>
+        <thead><tr><th>Runtime</th><th>Requirement</th><th>Verify</th></tr></thead>
+        <tbody>
+          <tr><td>☕ <strong>Java</strong></td><td>JDK installed</td><td><code>javac -version</code></td></tr>
+          <tr><td>🟢 <strong>Node.js</strong></td><td>Node.js installed — no extra packages needed</td><td><code>node --version</code></td></tr>
+          <tr><td>🐍 <strong>Python</strong></td><td>Python 3 + <code>cryptography</code> package</td><td><code>python --version</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <ul class="prereq-list">
+        <li><span class="check">✓</span> Script file in the same folder as <code>jwt.properties</code> and your private key <code>.key</code> file</li>
+        <li><span class="check">✓</span> Private key in PKCS#8 PEM format — keys exported from Salesforce Certificate &amp; Key Management are already in this format</li>
+        <li><span class="check">✓</span> Your org's My Domain URL — find it in Salesforce Setup → <strong>My Domain</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Configuration -->
+  <div class="section">
+    <h2><span class="icon">⚙️</span> Configuration — jwt.properties</h2>
+    <p>All JWT parameters are stored in <code>jwt.properties</code>. Update this file with your org values before running.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Property</th><th>Description</th><th>Where to find it</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>consumer_key</code></td>
+            <td>ECA Consumer Key — JWT <code>iss</code> (issuer)</td>
+            <td><span class="muted">Salesforce Setup → External Client Apps</span></td>
+          </tr>
+          <tr>
+            <td><code>username</code></td>
+            <td>Salesforce integration username — JWT <code>sub</code> (subject)</td>
+            <td><span class="muted">Salesforce Setup → Users</span></td>
+          </tr>
+          <tr>
+            <td><code>audience</code></td>
+            <td>Your org's My Domain URL — JWT <code>aud</code></td>
+            <td><span class="muted">Salesforce Setup → My Domain</span></td>
+          </tr>
+          <tr>
+            <td><code>private_key</code></td>
+            <td>Path to your RS256 PEM private key file</td>
+            <td><span class="muted">e.g. <code>server.key</code></span></td>
+          </tr>
+          <tr>
+            <td><code>expiry</code></td>
+            <td>Token lifetime in seconds — Salesforce max is 180</td>
+            <td><span class="muted"><code>180</code> (recommended)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Audience section -->
+    <h2 style="margin-top:32px"><span class="icon">🌐</span> Audience (<code style="font-size:14px">aud</code>) — My Domain URL</h2>
+    <p>Set <code>audience</code> to your org's <strong>My Domain URL</strong> — this is the recommended approach per Salesforce documentation. Do not use the generic <code>login.salesforce.com</code> or <code>test.salesforce.com</code> endpoints.</p>
+
+    <div class="aud-grid">
+      <div class="aud-card sandbox">
+        <div class="aud-label">🧪 Sandbox</div>
+        <div class="aud-format">[MyDomain]--[SandboxName].sandbox.my.salesforce.com</div>
+        <code class="aud-example">https://mycompany--qa.sandbox.my.salesforce.com</code>
+      </div>
+      <div class="aud-card prod">
+        <div class="aud-label">🚀 Production</div>
+        <div class="aud-format">[MyDomain].my.salesforce.com</div>
+        <code class="aud-example">https://mycompany.my.salesforce.com</code>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p>Your My Domain URL can be found in Salesforce Setup → <strong>My Domain</strong>. Copy the full URL including <code>https://</code>.</p>
+    </div>
+  </div>
+
+  <!-- PowerShell Commands -->
+  <div class="section">
+    <h2><span class="icon">💻</span> PowerShell Commands</h2>
+    <p>Navigate to your JWT folder first, then choose a runtime below:</p>
+    <div class="code-block" style="margin-bottom:20px">
+      <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
+      <pre>cd C:\path\to\your\JWT\folder</pre>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-lang="java"   onclick="switchTab('java')">☕ Java</button>
+      <button class="tab-btn"        data-lang="node"   onclick="switchTab('node')">🟢 Node.js</button>
+      <button class="tab-btn"        data-lang="python" onclick="switchTab('python')">🐍 Python</button>
+    </div>
+
+    <!-- Java tab -->
+    <div class="tab-content active" data-lang="java">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Compile — run once, or after changes to GenerateJWT.java</strong>
+            <div class="code-block">
+              <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
+              <pre>javac GenerateJWT.java</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Generate the JWT assertion</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Standard</span><span class="lang-tag">PS</span></div>
+              <pre>java GenerateJWT --config jwt.properties</pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><span>With verbose output — shows decoded claims</span><span class="lang-tag">PS</span></div>
+              <pre>java GenerateJWT --config jwt.properties --verbose</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Exchange JWT for a Salesforce access token</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Token Exchange</span><span class="lang-tag">PS</span></div>
+              <pre><span class="var">$JWT</span> = java GenerateJWT --config jwt.properties
+
+<span class="comment"># POST JWT assertion to your org's token endpoint</span>
+<span class="var">$response</span> = Invoke-RestMethod `
+    -Method POST `
+    -Uri <span class="string">"https://[your-org].my.salesforce.com/services/oauth2/token"</span> `
+    -Body <span class="string">"grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&amp;assertion=<span class="var">$JWT</span>"</span> `
+    -ContentType <span class="string">"application/x-www-form-urlencoded"</span>
+
+<span class="var">$accessToken</span> = <span class="var">$response</span>.access_token
+<span class="var">$instanceUrl</span> = <span class="var">$response</span>.instance_url</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Node.js tab -->
+    <div class="tab-content" data-lang="node">
+      <div class="callout info" style="margin-bottom:16px">
+        <span class="icon">ℹ️</span>
+        <p>No compile step required. Uses Node.js built-in <code>crypto</code> module — no external packages needed.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Generate the JWT assertion</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Standard</span><span class="lang-tag">PS</span></div>
+              <pre>node GenerateJWT.js --config jwt.properties</pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><span>With verbose output — shows decoded claims</span><span class="lang-tag">PS</span></div>
+              <pre>node GenerateJWT.js --config jwt.properties --verbose</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Exchange JWT for a Salesforce access token</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Token Exchange</span><span class="lang-tag">PS</span></div>
+              <pre><span class="var">$JWT</span> = node GenerateJWT.js --config jwt.properties
+
+<span class="comment"># POST JWT assertion to your org's token endpoint</span>
+<span class="var">$response</span> = Invoke-RestMethod `
+    -Method POST `
+    -Uri <span class="string">"https://[your-org].my.salesforce.com/services/oauth2/token"</span> `
+    -Body <span class="string">"grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&amp;assertion=<span class="var">$JWT</span>"</span> `
+    -ContentType <span class="string">"application/x-www-form-urlencoded"</span>
+
+<span class="var">$accessToken</span> = <span class="var">$response</span>.access_token
+<span class="var">$instanceUrl</span> = <span class="var">$response</span>.instance_url</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Python tab -->
+    <div class="tab-content" data-lang="python">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Install dependency — run once</strong>
+            <div class="code-block">
+              <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
+              <pre>pip install cryptography</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Generate the JWT assertion</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Standard</span><span class="lang-tag">PS</span></div>
+              <pre>python GenerateJWT.py --config jwt.properties</pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><span>With verbose output — shows decoded claims</span><span class="lang-tag">PS</span></div>
+              <pre>python GenerateJWT.py --config jwt.properties --verbose</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Exchange JWT for a Salesforce access token</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Token Exchange</span><span class="lang-tag">PS</span></div>
+              <pre><span class="var">$JWT</span> = python GenerateJWT.py --config jwt.properties
+
+<span class="comment"># POST JWT assertion to your org's token endpoint</span>
+<span class="var">$response</span> = Invoke-RestMethod `
+    -Method POST `
+    -Uri <span class="string">"https://[your-org].my.salesforce.com/services/oauth2/token"</span> `
+    -Body <span class="string">"grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&amp;assertion=<span class="var">$JWT</span>"</span> `
+    -ContentType <span class="string">"application/x-www-form-urlencoded"</span>
+
+<span class="var">$accessToken</span> = <span class="var">$response</span>.access_token
+<span class="var">$instanceUrl</span> = <span class="var">$response</span>.instance_url</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jwt.io Alternative -->
+  <div class="section">
+    <h2><span class="icon">🌐</span> Alternative: Generate JWT via jwt.io</h2>
+    <p>If you prefer a browser-based approach without running any code, you can use <a href="https://jwt.io" target="_blank" style="color:var(--blue)">jwt.io</a> to manually build and sign the JWT assertion.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Open jwt.io and select JWT Encoder</strong>
+          <p>Go to <a href="https://jwt.io" target="_blank" style="color:var(--blue)">https://jwt.io</a> → click the <strong>JWT Encoder</strong> tab → set algorithm to <strong>RS256</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Fill in the Payload</strong>
+          <p>Replace the placeholder values with your values from <code>jwt.properties</code>:</p>
+          <div class="code-block">
+            <div class="code-header"><span>Payload</span><span class="lang-tag json">JSON</span></div>
+            <pre>{
+  <span class="string">"iss"</span>: <span class="val">"&lt;consumer_key from jwt.properties&gt;"</span>,
+  <span class="string">"sub"</span>: <span class="val">"&lt;username from jwt.properties&gt;"</span>,
+  <span class="string">"aud"</span>: <span class="val">"&lt;My Domain URL from jwt.properties&gt;"</span>,
+  <span class="string">"exp"</span>: <span class="val">1773862391</span>  <span class="comment">// replace with current Unix time + 180</span>
+}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Calculate the <code>exp</code> value</strong>
+          <p>Open your browser's developer console (F12 → Console) and run:</p>
+          <div class="code-block">
+            <div class="code-header"><span>Browser Console</span><span class="lang-tag">JS</span></div>
+            <pre>Math.floor(Date.now() / 1000) + 180</pre>
+          </div>
+          <p>Paste the result as the <code>exp</code> value in the payload.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Paste the Private Key</strong>
+          <p>Under <strong>Sign JWT</strong>, set <strong>Private Key Format</strong> to <code>PEM</code> and paste the full contents of your <code>server.key</code> file.</p>
+          <p>Confirm all three green indicators appear: <strong>Valid header</strong>, <strong>Valid payload</strong>, <strong>Valid private key</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Copy the Encoded JWT</strong>
+          <p>The signed JWT assertion appears in the <strong>Encoded JWT</strong> panel on the right. Copy it — this is your assertion for the Salesforce token exchange.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn" style="margin-top:16px;">
+      <span class="icon">⚠️</span>
+      <p><strong>jwt.io is a public tool.</strong> Do not paste production private keys into it. Use only for testing and validation with non-sensitive keys.</p>
+    </div>
+  </div>
+
+  <!-- JWT Claims -->
+  <div class="section">
+    <h2><span class="icon">🔑</span> JWT Claims</h2>
+    <p>The script automatically populates the following claims in the signed JWT:</p>
+    <div class="claims-grid">
+      <div class="claim-card">
+        <div class="claim-key">iss — Issuer</div>
+        <div class="claim-desc">ECA Consumer Key from <code>jwt.properties</code></div>
+      </div>
+      <div class="claim-card">
+        <div class="claim-key">sub — Subject</div>
+        <div class="claim-desc">Salesforce integration username from <code>jwt.properties</code></div>
+      </div>
+      <div class="claim-card">
+        <div class="claim-key">aud — Audience</div>
+        <div class="claim-desc">Your org's My Domain URL from <code>jwt.properties</code></div>
+      </div>
+      <div class="claim-card">
+        <div class="claim-key">exp — Expiry</div>
+        <div class="claim-desc">Current Unix time + 180 s — equivalent to <code>Math.floor(Date.now()/1000) + 180</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sample Response -->
+  <div class="section">
+    <h2><span class="icon">📦</span> Sample Token Response</h2>
+    <p>After a successful token exchange, Salesforce returns a JSON response:</p>
+    <div class="code-block">
+      <div class="code-header"><span>Response</span><span class="lang-tag json">JSON</span></div>
+      <pre>{
+    <span class="string">"access_token"</span>: <span class="val">"&lt;your-access-token&gt;"</span>,
+    <span class="string">"scope"</span>:        <span class="val">"web api"</span>,
+    <span class="string">"instance_url"</span>: <span class="val">"https://[your-org].my.salesforce.com"</span>,
+    <span class="string">"id"</span>:           <span class="val">"https://[login-url]/id/[org-id]/[user-id]"</span>,
+    <span class="string">"token_type"</span>:   <span class="val">"Bearer"</span>
+}</pre>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="field-tag tag-green">access_token</span></td><td>The token to pass in every Salesforce API request</td></tr>
+          <tr><td><span class="field-tag tag-blue">instance_url</span></td><td>Base URL for all API calls — always use this, never hardcode the domain</td></tr>
+          <tr><td><span class="field-tag tag-amber">token_type</span></td><td>Always <code>Bearer</code> — used as the Authorization header prefix</td></tr>
+          <tr><td><span class="field-tag tag-subtle">scope</span></td><td>Permissions granted to this token by the connected app</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Using the Access Token -->
+  <div class="section">
+    <h2><span class="icon">🚀</span> Using the Access Token</h2>
+    <p>Pass <code>access_token</code> as a <strong>Bearer</strong> token in the <code>Authorization</code> header of every Salesforce API request.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span>SOQL Query — PowerShell</span><span class="lang-tag">PS</span></div>
+      <pre><span class="comment"># Use $accessToken and $instanceUrl from the exchange step above</span>
+Invoke-RestMethod `
+    -Method GET `
+    -Uri <span class="string">"<span class="var">$instanceUrl</span>/services/data/v59.0/query?q=SELECT+Id,Name+FROM+Account+LIMIT+5"</span> `
+    -Headers @{ Authorization = <span class="string">"Bearer <span class="var">$accessToken</span>"</span> }</pre>
+    </div>
+
+    <div class="callout warn">
+      <span class="icon">⚠️</span>
+      <p>The JWT assertion is valid for <strong>3 minutes only</strong>. Re-run the script to generate a fresh token whenever needed.</p>
+    </div>
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p>Always use <code>instance_url</code> from the token response as your API base URL — never hardcode your org domain.</p>
+    </div>
+  </div>
+
+  <!-- Reference -->
+  <div class="section">
+    <h2><span class="icon">📖</span> Salesforce Reference</h2>
+    <a class="ref-link" href="https://help.salesforce.com/s/articleView?id=xcloud.remoteaccess_oauth_jwt_flow.htm&language=en_US&type=5" target="_blank">
+      <span>📄</span>
+      OAuth 2.0 JWT Bearer Flow for Server-to-Server Integration — Salesforce Help
+    </a>
+  </div>
+
+  <!-- Notes -->
+  <div class="section">
+    <h2><span class="icon">📋</span> Notes</h2>
+    <div class="card">
+      <ul class="notes-list">
+        <li>All three scripts share the same interface — <code>--config jwt.properties</code> works identically across Java, Node.js, and Python</li>
+        <li><strong>Java</strong>: No external libraries — uses built-in <code>java.security</code> package. Recompile only needed when <code>GenerateJWT.java</code> changes</li>
+        <li><strong>Node.js</strong>: No external packages — uses built-in <code>crypto</code> module. No compile step required</li>
+        <li><strong>Python</strong>: Requires <code>cryptography</code> package (<code>pip install cryptography</code>). No compile step required</li>
+        <li>Private key must be in <strong>PKCS#8 PEM format</strong> — keys exported from Salesforce Certificate &amp; Key Management are already in this format</li>
+        <li>JWT is printed to stdout — safe to pipe or capture into a PowerShell variable</li>
+        <li>Signing algorithm: <strong>RS256</strong> (SHA-256 with RSA) — required by Salesforce JWT Bearer flow</li>
+        <li>Compatible with both <strong>Sandbox</strong> and <strong>Production</strong> orgs — set the correct My Domain URL in <code>jwt.properties</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    JWT Bearer Token Generator &nbsp;·&nbsp; Salesforce OAuth 2.0 JWT Bearer Flow &nbsp;·&nbsp; RS256
+  </div>
+
+</div>
+
+<script>
+  function switchTab(lang) {
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    document.querySelectorAll('.tab-content').forEach(function(c) {
+      c.classList.toggle('active', c.dataset.lang === lang);
+    });
+  }
+</script>
+</body>
+</html>

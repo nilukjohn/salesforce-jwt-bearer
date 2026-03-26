@@ -285,6 +285,46 @@
     <p class="subtitle">Client instructions for generating a signed RS256 JWT assertion and exchanging it for a Salesforce access token. Compatible with both Sandbox and Production orgs.</p>
   </div>
 
+  <!-- Getting the Files -->
+  <div class="section">
+    <h2><span class="icon">⬇️</span> Getting the Files</h2>
+    <p>All files are hosted on GitHub. Download them using one of the options below, then add your private key file to the same folder.</p>
+
+    <div class="aud-grid">
+      <div class="aud-card sandbox" style="padding:20px 18px">
+        <div class="aud-label">📦 Download ZIP</div>
+        <p style="font-size:13px; color:var(--text); margin:8px 0 12px;">No Git required — just download and extract.</p>
+        <ol style="font-size:13px; color:var(--text-muted); padding-left:18px; line-height:2;">
+          <li>Go to the GitHub repo link below</li>
+          <li>Click the green <strong style="color:var(--text)">Code</strong> button</li>
+          <li>Select <strong style="color:var(--text)">Download ZIP</strong></li>
+          <li>Extract to a folder on your machine</li>
+        </ol>
+        <a href="https://github.com/nilukjohn/salesforce-jwt-bearer" target="_blank"
+           style="display:inline-block; margin-top:12px; font-size:12px; font-family:'JetBrains Mono',monospace;
+                  background:var(--code-bg); color:var(--blue); padding:6px 12px; border-radius:6px;
+                  border:1px solid var(--blue-border); text-decoration:none; word-break:break-all;">
+          github.com/nilukjohn/salesforce-jwt-bearer
+        </a>
+      </div>
+
+      <div class="aud-card prod" style="padding:20px 18px">
+        <div class="aud-label">🖥️ Clone with Git</div>
+        <p style="font-size:13px; color:var(--text); margin:8px 0 12px;">If you have Git installed, run in PowerShell:</p>
+        <div class="code-block" style="margin:0">
+          <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
+          <pre style="font-size:12px">git clone https://github.com/nilukjohn/salesforce-jwt-bearer.git
+cd salesforce-jwt-bearer</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p>After downloading, place your private key file (e.g. <code>server.key</code>) in the same folder as the scripts before running.</p>
+    </div>
+  </div>
+
   <!-- Prerequisites -->
   <div class="section">
     <h2><span class="icon">✅</span> Prerequisites</h2>

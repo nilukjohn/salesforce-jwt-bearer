@@ -60,6 +60,14 @@
   h1 span { color: var(--blue); }
   .subtitle { color: var(--text-muted); font-size: 15px; }
 
+  /* ── Step badge (used in Phase 4) ── */
+  .step-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    background: var(--accent-bg); border: 1px solid var(--accent-border); color: var(--accent);
+    flex-shrink: 0;
+  }
+
   /* ── Phase header ── */
   .phase-label {
     font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
@@ -251,7 +259,7 @@
       <table>
         <thead><tr><th>Phase</th><th>Who</th><th>What</th></tr></thead>
         <tbody>
-          <tr><td><strong>Phase 1</strong></td><td>SF Admin / DevOps</td><td>Generate private key &amp; self-signed certificate using OpenSSL</td></tr>
+          <tr><td><strong>Phase 1</strong></td><td>SF Admin</td><td>Generate certificate in Salesforce Certificate &amp; Key Management, then export private key</td></tr>
           <tr><td><strong>Phase 2</strong></td><td>SF Admin</td><td>Create &amp; configure External Client App (ECA) in Salesforce Setup</td></tr>
           <tr><td><strong>Phase 3</strong></td><td>SF Admin</td><td>Collect &amp; securely deliver credentials to the client</td></tr>
         </tbody>
@@ -262,46 +270,59 @@
   <!-- Phase 1: Generate Key and Certificate -->
   <div class="section">
     <div class="phase-label">Phase 1</div>
-    <h2><span class="icon">🔐</span> Generate Private Key &amp; Certificate</h2>
-    <p>Use OpenSSL to generate an RSA private key and a self-signed X.509 certificate. Run these commands in a terminal (Mac/Linux) or PowerShell with OpenSSL installed (Windows).</p>
+    <h2><span class="icon">🔐</span> Generate Certificate &amp; Private Key</h2>
 
-    <div class="steps" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0 24px;">
+    <!-- Method 1 Primary -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <span class="badge badge-green" style="font-size:10px;padding:3px 12px;">✅ Primary Method</span>
+      <span style="font-size:15px;font-weight:700;color:var(--text);">Salesforce Certificate and Key Management</span>
+    </div>
+    <p>This is the security team's approved approach. All key generation happens inside Salesforce — no local certificate tooling required beyond keytool and openssl for the export conversion.</p>
+
+    <div class="steps" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0 24px;margin-bottom:16px;">
 
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-body">
-          <strong>Generate a password-protected RSA key</strong>
-          <div class="step-sub">Creates an intermediate passphrase-protected key (required by OpenSSL).</div>
-          <div class="code-block">
-            <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
-            <pre>openssl genrsa -des3 -passout pass:x -out server.pass.key 2048</pre>
+          <strong>Create a Self-Signed Certificate in Salesforce</strong>
+          <div class="step-sub">Navigate to:</div>
+          <div class="sf-path">
+            <span class="crumb">Setup</span>
+            <span class="arrow">›</span>
+            <span class="crumb">Security</span>
+            <span class="arrow">›</span>
+            <span class="crumb highlight">Certificate and Key Management</span>
+            <span class="arrow">›</span>
+            <span class="crumb highlight">Create Self-Signed Certificate</span>
           </div>
+          <ul class="checklist" style="margin-top:8px;">
+            <li><span class="check">✓</span> <strong>Label</strong>: descriptive name (e.g. <code>JWT_Auth_Cert</code>)</li>
+            <li><span class="check">✓</span> <strong>Exportable Private Key</strong>: checked</li>
+            <li><span class="check">✓</span> <strong>Key Size</strong>: 2048</li>
+          </ul>
+          <p style="margin-top:10px;margin-bottom:0;">Click <strong>Save</strong>.</p>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-body">
-          <strong>Strip the passphrase — generate the final private key</strong>
-          <div class="step-sub">This produces <code>server.key</code> — the file you will give to the client.</div>
-          <div class="code-block">
-            <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
-            <pre>openssl rsa -passin pass:x -in server.pass.key -out server.key</pre>
-          </div>
+          <strong>Export the Keystore (.jks)</strong>
+          <div class="step-sub">From the Certificate and Key Management list, click <strong>Export to Keystore</strong> next to your certificate. Set a keystore password when prompted and save it securely. This downloads a <code>.jks</code> file to your machine.</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-body">
-          <strong>Remove the intermediate key file</strong>
+          <strong>Find the alias in the keystore</strong>
           <div class="code-block">
             <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
-            <pre><span class="comment"># Mac / Linux</span>
-rm server.pass.key
-
-<span class="comment"># Windows PowerShell</span>
-Remove-Item server.pass.key</pre>
+            <pre>keytool -list -keystore &lt;certname&gt;.jks -storepass &lt;jks_password&gt;</pre>
+          </div>
+          <div class="callout info" style="margin-top:8px;margin-bottom:0;">
+            <span class="callout-icon">ℹ️</span>
+            <p><strong>keytool requires the JDK</strong> (not just the JRE). If not found, run: <code>choco install openjdk -y</code> then <code>refreshenv</code>.</p>
           </div>
         </div>
       </div>
@@ -309,11 +330,17 @@ Remove-Item server.pass.key</pre>
       <div class="step">
         <div class="step-num">4</div>
         <div class="step-body">
-          <strong>Create a Certificate Signing Request (CSR)</strong>
-          <div class="step-sub">Fill in your organisation details when prompted (Country, State, Organisation, etc.).</div>
+          <strong>Convert JKS → PKCS12 (.p12)</strong>
           <div class="code-block">
             <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
-            <pre>openssl req -new -key server.key -out server.csr</pre>
+            <pre>keytool -importkeystore \
+  -srckeystore &lt;certname&gt;.jks \
+  -destkeystore &lt;certname&gt;.p12 \
+  -deststoretype PKCS12 \
+  -srcalias &lt;alias&gt; \
+  -srcstorepass &lt;jks_password&gt; \
+  -deststorepass &lt;p12_password&gt; \
+  -noprompt</pre>
           </div>
         </div>
       </div>
@@ -321,42 +348,166 @@ Remove-Item server.pass.key</pre>
       <div class="step">
         <div class="step-num">5</div>
         <div class="step-body">
-          <strong>Generate a self-signed certificate (valid 365 days)</strong>
-          <div class="step-sub">This produces <code>server.crt</code> — the certificate you will upload to Salesforce.</div>
+          <strong>Convert PKCS12 → PEM (private.key)</strong>
+          <div class="step-sub">This produces <code>private.key</code> — the file you will deliver to the client.</div>
           <div class="code-block">
             <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
-            <pre>openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt</pre>
+            <pre>openssl pkcs12 \
+  -in &lt;certname&gt;.p12 \
+  -nocerts \
+  -nodes \
+  -out private.key \
+  -passin pass:&lt;p12_password&gt;</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <strong>Verify the key</strong>
+          <div class="code-block">
+            <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+            <pre>openssl rsa -in private.key -check -noout
+<span class="comment"># Expected: RSA key ok</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <strong>Remove the intermediate .p12 file</strong>
+          <div class="code-block">
+            <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+            <pre><span class="comment"># Mac / Linux</span>
+rm &lt;certname&gt;.p12
+
+<span class="comment"># Windows PowerShell</span>
+Remove-Item &lt;certname&gt;.p12</pre>
           </div>
         </div>
       </div>
 
     </div>
 
-    <div style="margin-top:16px;">
-      <p style="margin-bottom:10px;font-size:13px;">Files produced after Phase 1:</p>
+    <div style="margin-bottom:16px;">
+      <p style="margin-bottom:10px;font-size:13px;">Files produced after Phase 1 (Method 1):</p>
       <div class="files-row">
+        <div class="file-chip">
+          <span class="file-icon">🗄️</span>
+          <code>&lt;certname&gt;.jks</code>
+          <span class="file-role">— Keystore · store securely</span>
+        </div>
         <div class="file-chip chip-blue">
           <span class="file-icon">🔑</span>
-          <code>server.key</code>
+          <code>private.key</code>
           <span class="file-role">— Private key · deliver to client</span>
-        </div>
-        <div class="file-chip chip-green">
-          <span class="file-icon">📜</span>
-          <code>server.crt</code>
-          <span class="file-role">— Certificate · upload to Salesforce</span>
-        </div>
-        <div class="file-chip">
-          <span class="file-icon">📄</span>
-          <code>server.csr</code>
-          <span class="file-role">— CSR · can be kept or discarded</span>
         </div>
       </div>
     </div>
 
-    <div class="callout danger">
+    <div class="callout danger" style="margin-bottom:32px;">
       <span class="callout-icon">🚨</span>
-      <p><strong>Never share <code>server.key</code> over email or Slack.</strong> Deliver it via a secure channel (1Password, Vault, encrypted ZIP, etc.). Anyone with this file can impersonate the integration user.</p>
+      <p><strong>Never share <code>private.key</code> over email or Slack.</strong> Deliver it via a secure channel (1Password, Vault, encrypted ZIP, etc.). Anyone with this file can impersonate the integration user.</p>
     </div>
+
+    <!-- Method 2 Alternative -->
+    <div style="border:1px solid var(--border);border-radius:12px;padding:20px 24px;background:var(--surface);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span class="badge badge-amber" style="font-size:10px;padding:3px 12px;">Alternative Method</span>
+        <span style="font-size:15px;font-weight:700;color:var(--text);">Generate via OpenSSL</span>
+      </div>
+      <p style="margin-bottom:16px;">Use this method only if Salesforce Certificate and Key Management is unavailable, or if your security team explicitly approves a locally-generated certificate.</p>
+
+      <div class="steps" style="border:none;padding:0;">
+
+        <div class="step">
+          <div class="step-num" style="background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);">1</div>
+          <div class="step-body">
+            <strong>Generate a password-protected RSA key</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+              <pre>openssl genrsa -des3 -passout pass:x -out server.pass.key 2048</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num" style="background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);">2</div>
+          <div class="step-body">
+            <strong>Strip the passphrase — generate the final private key</strong>
+            <div class="step-sub">This produces <code>server.key</code> — the file you will give to the client.</div>
+            <div class="code-block">
+              <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+              <pre>openssl rsa -passin pass:x -in server.pass.key -out server.key</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num" style="background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);">3</div>
+          <div class="step-body">
+            <strong>Remove the intermediate key file</strong>
+            <div class="code-block">
+              <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+              <pre><span class="comment"># Mac / Linux</span>
+rm server.pass.key
+
+<span class="comment"># Windows PowerShell</span>
+Remove-Item server.pass.key</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num" style="background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);">4</div>
+          <div class="step-body">
+            <strong>Create a Certificate Signing Request (CSR)</strong>
+            <div class="step-sub">Fill in your organisation details when prompted (Country, State, Organisation, etc.).</div>
+            <div class="code-block">
+              <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+              <pre>openssl req -new -key server.key -out server.csr</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num" style="background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);">5</div>
+          <div class="step-body">
+            <strong>Generate a self-signed certificate (valid 365 days)</strong>
+            <div class="step-sub">This produces <code>server.crt</code> — the certificate you will upload to Salesforce ECA.</div>
+            <div class="code-block">
+              <div class="code-header"><span>Terminal / PowerShell</span><span class="lang-tag lang-bash">BASH</span></div>
+              <pre>openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt</pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:16px;">
+        <p style="margin-bottom:10px;font-size:13px;">Files produced (Method 2):</p>
+        <div class="files-row">
+          <div class="file-chip chip-blue">
+            <span class="file-icon">🔑</span>
+            <code>server.key</code>
+            <span class="file-role">— Private key · deliver to client</span>
+          </div>
+          <div class="file-chip chip-green">
+            <span class="file-icon">📜</span>
+            <code>server.crt</code>
+            <span class="file-role">— Certificate · upload to Salesforce</span>
+          </div>
+          <div class="file-chip">
+            <span class="file-icon">📄</span>
+            <code>server.csr</code>
+            <span class="file-role">— CSR · can be kept or discarded</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Phase 2: Salesforce ECA Setup -->
@@ -497,20 +648,199 @@ Remove-Item server.pass.key</pre>
     </div>
   </div>
 
+  <!-- Phase 4: PeopleSoft ECA Setup -->
+  <div class="section">
+    <div class="phase-label">Phase 4</div>
+    <h2><span class="icon">🔗</span> PeopleSoft ECA Setup — QA Sandbox</h2>
+    <div class="callout info" style="margin-bottom:20px">
+      <span class="callout-icon">ℹ️</span>
+      <p>Jira: <strong>CX-13013</strong> | Parent: <strong>CX-12838 (IAC-46)</strong> — End-to-end setup for the <code>JWT_PeopleSoft</code> External Client App in QA Sandbox.</p>
+    </div>
+
+    <!-- Step 1 -->
+    <h3 style="font-size:15px; color:var(--text); margin:0 0 12px; display:flex; align-items:center; gap:8px;"><span class="step-badge">1</span> Create Self-Signed Certificate</h3>
+    <p><strong>Setup → Security → Certificate and Key Management → Create Self-Signed Certificate</strong></p>
+    <div class="table-wrap" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Label</strong></td><td><code>JWT_PeopleSoft</code></td></tr>
+          <tr><td><strong>Key Size</strong></td><td><code>2048</code></td></tr>
+          <tr><td><strong>Exportable Private Key</strong></td><td>☑ Must be checked</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Click <strong>Save</strong>, then click <strong>Export to Keystore</strong> → set a password → save the <code>.jks</code> file securely.</p>
+
+    <!-- Step 2 -->
+    <h3 style="font-size:15px; color:var(--text); margin:20px 0 12px; display:flex; align-items:center; gap:8px;"><span class="step-badge">2</span> Create External Client App</h3>
+    <p><strong>Setup → External Client App Manager → New External Client App</strong></p>
+    <div class="table-wrap" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><strong>App Name</strong></td><td><code>JWT_PeopleSoft</code></td></tr>
+          <tr><td><strong>Contact Email</strong></td><td>Admin email</td></tr>
+          <tr><td><strong>Callback URL</strong></td><td><code>https://test.salesforce.com/services/oauth2/success</code></td></tr>
+          <tr><td><strong>Flow</strong></td><td>JWT Bearer Flow</td></tr>
+          <tr><td><strong>Digital Signatures</strong></td><td>Upload <code>JWT_PeopleSoft</code> certificate</td></tr>
+          <tr><td><strong>Scopes</strong></td><td>Manage user data via APIs (api)</td></tr>
+          <tr><td><strong>Security</strong></td><td>Require secret for Refresh Token</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Click <strong>Create</strong> → go to <strong>Settings tab → Consumer Key and Secret → Copy Consumer Key</strong>.</p>
+
+    <!-- Step 3 -->
+    <h3 style="font-size:15px; color:var(--text); margin:20px 0 12px; display:flex; align-items:center; gap:8px;"><span class="step-badge">3</span> Configure OAuth Policy <span style="color:var(--accent); font-size:12px; font-weight:600; margin-left:4px;">⚠️ CRITICAL</span></h3>
+    <div class="callout warn" style="margin-bottom:12px">
+      <span class="callout-icon">⚠️</span>
+      <p>Without this step, all requests will fail with <code>user hasn't approved this consumer</code>.</p>
+    </div>
+    <ol style="color:var(--text-muted); font-size:14px; line-height:2.1; padding-left:20px;">
+      <li>Go to the ECA detail page → <strong style="color:var(--text)">Edit</strong></li>
+      <li><strong style="color:var(--text)">OAuth Policies → Permitted Users:</strong> Set to <strong style="color:var(--text)">"Admin approved users are pre-authorized"</strong></li>
+      <li><strong style="color:var(--text)">Profiles → Manage Profiles → Add:</strong> <code>System Administrator</code>, <code>SysAdmin_API</code>, and any other profiles needing JWT access</li>
+      <li>Click <strong style="color:var(--text)">Save</strong></li>
+    </ol>
+    <p style="margin-top:12px">Verify profile assignment:</p>
+    <div class="code-block">
+      <div class="code-header"><span>SOQL Verification</span><span class="lang-tag">SQL</span></div>
+      <pre>SELECT Parent.Profile.Name, SetupEntityType
+FROM SetupEntityAccess
+WHERE SetupEntityType = 'ConnectedApplication'
+  AND SetupEntityId = '&lt;ECA_CONNECTED_APP_ID&gt;'</pre>
+    </div>
+    <p>If this returns 0 records, profiles are NOT assigned — redo this step.</p>
+
+    <!-- Step 4 -->
+    <h3 style="font-size:15px; color:var(--text); margin:20px 0 12px; display:flex; align-items:center; gap:8px;"><span class="step-badge">4</span> Convert Certificate to Private Key (PEM)</h3>
+    <div class="code-block">
+      <div class="code-header"><span>4a — Find the alias</span><span class="lang-tag">bash</span></div>
+      <pre>keytool -list -keystore JWT_PeopleSoft.jks -storepass YOUR_PASSWORD</pre>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span>4b — Convert JKS → PKCS12</span><span class="lang-tag">bash</span></div>
+      <pre>keytool -importkeystore \
+  -srckeystore JWT_PeopleSoft.jks \
+  -destkeystore JWT_PeopleSoft.p12 \
+  -deststoretype PKCS12 \
+  -srcalias &lt;ALIAS_FROM_4a&gt; \
+  -srcstorepass YOUR_JKS_PASSWORD \
+  -deststorepass YOUR_P12_PASSWORD</pre>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span>4c — Extract private key</span><span class="lang-tag">bash</span></div>
+      <pre>openssl pkcs12 -in JWT_PeopleSoft.p12 -nocerts -nodes \
+  -out private.key -passin pass:YOUR_P12_PASSWORD</pre>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span>4d — Extract public cert (for jwt.io testing)</span><span class="lang-tag">bash</span></div>
+      <pre>openssl pkcs12 -in JWT_PeopleSoft.p12 -clcerts -nokeys \
+  -out public.crt -passin pass:YOUR_P12_PASSWORD</pre>
+    </div>
+
+    <!-- Step 5 -->
+    <h3 style="font-size:15px; color:var(--text); margin:20px 0 12px; display:flex; align-items:center; gap:8px;"><span class="step-badge">5</span> Test via Postman</h3>
+    <p>Go to <a href="https://jwt.io" target="_blank" style="color:var(--blue)">jwt.io</a> → select <strong>RS256</strong> → fill in payload:</p>
+    <div class="code-block">
+      <div class="code-header"><span>JWT Payload</span><span class="lang-tag json">JSON</span></div>
+      <pre>{
+  <span class="string">"iss"</span>: <span class="val">"&lt;CONSUMER_KEY&gt;"</span>,
+  <span class="string">"sub"</span>: <span class="val">"&lt;SALESFORCE_USERNAME&gt;"</span>,
+  <span class="string">"aud"</span>: <span class="val">"https://test.salesforce.com"</span>,
+  <span class="string">"exp"</span>: <span class="val">&lt;UNIX_TIMESTAMP&gt;</span>
+}</pre>
+    </div>
+    <p>Calculate <code>exp</code> in browser console: <code>Math.floor(Date.now() / 1000) + 180</code></p>
+    <p>Paste <code>private.key</code> and <code>public.crt</code> in the signature section. Confirm <strong>"Signature Verified"</strong>.</p>
+    <p style="margin-top:12px"><strong>Postman POST request:</strong></p>
+    <div class="table-wrap" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>Key</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>grant_type</code></td><td><code>urn:ietf:params:oauth:grant-type:jwt-bearer</code></td></tr>
+          <tr><td><code>assertion</code></td><td><code>&lt;JWT from jwt.io&gt;</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>URL: <code>https://test.salesforce.com/services/oauth2/token</code> — or use the My Domain URL if you get <code>invalid_client</code>.</p>
+    <div class="code-block">
+      <div class="code-header"><span>Expected Response</span><span class="lang-tag json">JSON</span></div>
+      <pre>{
+  <span class="string">"access_token"</span>: <span class="val">"00D..."</span>,
+  <span class="string">"scope"</span>:        <span class="val">"api"</span>,
+  <span class="string">"instance_url"</span>: <span class="val">"https://cars-commerce--qa.sandbox.my.salesforce.com"</span>,
+  <span class="string">"token_type"</span>:   <span class="val">"Bearer"</span>
+}</pre>
+    </div>
+
+    <!-- Step 6 -->
+    <h3 style="font-size:15px; color:var(--text); margin:20px 0 12px; display:flex; align-items:center; gap:8px;"><span class="step-badge">6</span> Handoff to Client Team</h3>
+    <div class="deliver-grid">
+      <div class="deliver-card">
+        <div class="deliver-key">Consumer Key</div>
+        <div class="deliver-desc">From ECA Settings tab (Step 2)</div>
+      </div>
+      <div class="deliver-card highlight">
+        <div class="deliver-key">private.key</div>
+        <div class="deliver-desc">PEM file from Step 4c</div>
+        <div class="deliver-where">⚠️ Secure channel only — never email or Slack</div>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-key">Username (sub)</div>
+        <div class="deliver-desc">Integration user's Salesforce username</div>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-key">Audience URL</div>
+        <div class="deliver-desc"><code>https://test.salesforce.com</code> (sandbox) or <code>https://login.salesforce.com</code> (prod)</div>
+      </div>
+    </div>
+
+    <!-- Common Errors -->
+    <h3 style="font-size:15px; color:var(--text); margin:20px 0 12px;">Common Errors</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Error</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code>user hasn't approved this consumer</code></td><td>Add profile to ECA via Manage Profiles (Step 3)</td></tr>
+          <tr><td><code>invalid_client</code></td><td>Try My Domain URL instead of <code>test.salesforce.com</code></td></tr>
+          <tr><td><code>expired authorization code</code></td><td>Generate a fresh <code>exp</code> timestamp — must be within 3 minutes</td></tr>
+          <tr><td><code>invalid_grant</code></td><td>Certificate doesn't match private key, or wrong username</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Certificate Renewal -->
   <div class="section">
     <h2><span class="icon">🔄</span> Certificate Renewal</h2>
-    <p>The self-signed certificate is valid for <strong>365 days</strong>. Before expiry, repeat Phase 1 to generate a new key pair, re-upload the new <code>server.crt</code> to the ECA, and re-deliver the new <code>server.key</code> to the client.</p>
+    <p>The self-signed certificate is valid for <strong>365 days</strong>. Before expiry, follow the steps for whichever method was used to generate the original certificate.</p>
     <div class="callout info">
       <span class="callout-icon">ℹ️</span>
       <p>Set a calendar reminder 30 days before expiry. A lapsed certificate will break the integration silently — the token exchange will return an <code>invalid_grant</code> error.</p>
+    </div>
+    <div class="table-wrap" style="margin-bottom:12px;">
+      <table>
+        <thead><tr><th>Method</th><th>Renewal Steps</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Method 1</strong> (Salesforce)</td>
+            <td>Create a new cert in Certificate &amp; Key Management → re-export JKS → repeat keytool/openssl conversion → update ECA Digital Signatures → re-deliver <code>private.key</code></td>
+          </tr>
+          <tr>
+            <td><strong>Method 2</strong> (OpenSSL)</td>
+            <td>Repeat Phase 1 OpenSSL steps → re-upload new <code>server.crt</code> to ECA → re-deliver new <code>server.key</code></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Action</th><th>Frequency</th></tr></thead>
         <tbody>
-          <tr><td>Renew certificate + re-upload to ECA</td><td>Annually (before <code>server.crt</code> expiry)</td></tr>
-          <tr><td>Re-deliver <code>server.key</code> to client</td><td>Only when certificate is renewed</td></tr>
+          <tr><td>Renew certificate + re-upload to ECA</td><td>Annually (before certificate expiry)</td></tr>
+          <tr><td>Re-deliver private key to client</td><td>Only when certificate is renewed</td></tr>
           <tr><td>Consumer Key rotation</td><td>Only if ECA is recreated</td></tr>
         </tbody>
       </table>
@@ -536,9 +866,10 @@ Remove-Item server.pass.key</pre>
     <h2><span class="icon">📋</span> Notes</h2>
     <div class="card">
       <ul class="notes-list">
-        <li>OpenSSL must be installed locally to run Phase 1 commands — available on Mac/Linux by default; install via <a href="https://slproweb.com/products/Win32OpenSSL.html" style="color:var(--blue)">Win32 OpenSSL</a> on Windows</li>
-        <li>The generated <code>server.key</code> is in <strong>PKCS#8 PEM format</strong>, which the client's <code>GenerateJWT.java</code> loads directly with no conversion</li>
-        <li>Only <code>server.crt</code> goes into Salesforce — Salesforce uses it to verify the JWT signature without ever seeing the private key</li>
+        <li><strong>Method 1</strong> requires the JDK (for <code>keytool</code>) and OpenSSL — install JDK via <code>choco install openjdk -y</code> on Windows; OpenSSL is available by default on Mac/Linux or via <a href="https://slproweb.com/products/Win32OpenSSL.html" style="color:var(--blue)">Win32 OpenSSL</a> on Windows</li>
+        <li><strong>Method 2</strong> (OpenSSL) requires only OpenSSL — use only when approved by the security team as the alternative approach</li>
+        <li>The exported <code>private.key</code> is in <strong>PEM format</strong>, which the client's <code>GenerateJWT.java</code> loads directly with no conversion needed</li>
+        <li>Only the certificate (not the private key) goes into Salesforce — Salesforce uses it to verify the JWT signature without ever seeing the private key</li>
         <li>Repeat Phase 2 for each org environment (Sandbox and Production) — each org gets its own ECA and Consumer Key</li>
         <li>One certificate key pair can be reused across Sandbox and Production ECAs if preferred, or separate pairs can be generated per org</li>
       </ul>

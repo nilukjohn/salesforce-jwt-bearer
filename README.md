@@ -3,6 +3,23 @@
 
 ---
 
+## Help Docs — Get the Files from GitHub
+
+All scripts are hosted publicly on GitHub:
+
+**GitHub Repo:** [github.com/nilukjohn/salesforce-jwt-bearer](https://github.com/nilukjohn/salesforce-jwt-bearer)
+
+Click the green **Code** button → **Download ZIP** → extract to a local folder.
+
+Or clone with Git:
+```powershell
+git clone https://github.com/nilukjohn/salesforce-jwt-bearer.git
+```
+
+After downloading, copy your **private.key** (see Step 1) file into the same folder as the scripts.
+
+---
+
 ## Prerequisites
 
 Choose **one** runtime — all three use the same `jwt.properties` config file:
@@ -20,17 +37,42 @@ All files must be in the same folder:
 
 ---
 
-## Configuration
+## Step 1 — Client Generates Keypair (`private.key` + `public.crt`) via OpenSSL
 
-All JWT parameters are stored in `jwt.properties`. Update this file with your org values before running.
+> **Fallback method:** Salesforce Certificate and Key Management → export JKS → convert to PEM → deliver private key via secure channel.
 
-| Property | Description | Example |
+```bash
+# Step 1: Generate password-protected RSA key
+openssl genrsa -des3 -passout pass:x -out private.pass.key 2048
+
+# Step 2: Strip passphrase
+openssl rsa -passin pass:x -in private.pass.key -out private.key
+
+# Step 3: Remove intermediate key
+rm private.pass.key
+
+# Step 4: Create Certificate Signing Request
+openssl req -new -key private.key -out private.csr
+
+# Step 5: Generate self-signed certificate (365 days: This Cert expiration length can be updated)
+openssl x509 -req -sha256 -days 365 -in private.csr -signkey private.key -out public.crt
+```
+
+Client sends only `public.crt` to SF Admin → **`private.key` never leaves the client**.
+
+---
+
+## Step 2 — Configure `jwt.properties`
+
+Update the `jwt.properties` file with the values provided by the SF Admin:
+
+| Property | Description | Where to get it |
 |---|---|---|
-| `consumer_key` | ECA Consumer Key (JWT `iss`) | Found in Salesforce Setup → External Client Apps |
-| `username` | Salesforce integration username (JWT `sub`) | `integration@yourorg.com` |
-| `audience` | Your org's My Domain URL (JWT `aud`) | See Audience section below |
-| `private_key` | Path to RS256 PEM private key file | `server.key` |
-| `expiry` | Token lifetime in seconds — max 180 | `180` |
+| `consumer_key` | ECA Consumer Key (JWT `iss`) | SF Admin → Setup → External Client Apps |
+| `username` | Salesforce integration username (JWT `sub`) | SF Admin → Setup → Users |
+| `audience` | My Domain URL (JWT `aud`) | SF Admin → Setup → My Domain |
+| `private_key` | Path to your private key file | `private.key` (in the same folder) |
+| `expiry` | Token lifetime in seconds (max 180) | `180` (recommended) |
 
 ### Audience (`aud`) — My Domain URL
 
@@ -45,15 +87,15 @@ Set `audience` to your org's **My Domain URL**, not the generic Salesforce endpo
 
 ---
 
-## PowerShell Commands
+## Step 3 — Generate JWT & Exchange for Access Token
+
+Three runtime options are available — all use the same `jwt.properties` file. Run these commands in PowerShell/Bash:
 
 Open PowerShell and navigate to this folder:
 
 ```powershell
 cd C:\path\to\your\JWT\folder
 ```
-
-Three runtime options are available — all use the same `jwt.properties` config file.
 
 ---
 
@@ -155,6 +197,8 @@ $instanceUrl = $response.instance_url
 
 ## Alternative: Generate JWT via jwt.io
 
+> Use this method for one-off tests or if you don't have a runtime installed.
+
 If you prefer a browser-based approach without running any code, you can use [jwt.io](https://jwt.io) to manually build and sign the JWT.
 
 ### Steps
@@ -180,7 +224,7 @@ Math.floor(Date.now() / 1000) + 180
 
 Paste the result as the `exp` value in the payload.
 
-5. Under **Sign JWT**, set **Private Key Format** to `PEM` and paste the contents of your `server.key` file
+5. Under **Sign JWT**, set **Private Key Format** to `PEM` and paste the contents of your `private.key` file
 6. Confirm all three green indicators are shown: **Valid header**, **Valid payload**, **Valid private key**
 7. Copy the **Encoded JWT** from the right panel — this is your signed JWT assertion
 
@@ -272,9 +316,11 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ---
 
-## Reference
+## Salesforce Reference
 
-- [Salesforce OAuth 2.0 JWT Bearer Flow for Server-to-Server Integration](https://help.salesforce.com/s/articleView?id=xcloud.remoteaccess_oauth_jwt_flow.htm&language=en_US&type=5)
+- [OAuth 2.0 JWT Bearer Flow for Server-to-Server Integration](https://help.salesforce.com/s/articleView?id=xcloud.remoteaccess_oauth_jwt_flow.htm&language=en_US&type=5)
+- [Configure a JWT Bearer Flow](https://help.salesforce.com/s/articleView?id=xcloud.configure_oauth_jwt_flow_external_client_apps.htm&language=en_US&type=5)
+- [Create a Private Key and Self-Signed Certificate](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm)
 
 ---
 

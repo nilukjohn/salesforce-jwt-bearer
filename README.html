@@ -136,6 +136,7 @@
     background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border);
   }
   .lang-tag.json { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+  .lang-tag.bash { background: var(--purple-bg); color: var(--purple); border-color: var(--purple-border); }
 
   pre {
     padding: 18px 20px; overflow-x: auto;
@@ -235,7 +236,7 @@
   /* ── Notes list ── */
   .notes-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
   .notes-list li { font-size: 13.5px; color: var(--text-muted); display: flex; gap: 10px; align-items: flex-start; }
-  .notes-list li::before { content: '→'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .notes-list li::before { content: '\2192'; color: var(--green); font-weight: 700; flex-shrink: 0; }
 
   /* ── Reference link ── */
   .ref-link {
@@ -243,7 +244,7 @@
     background: var(--purple-bg); border: 1px solid var(--purple-border);
     color: var(--purple); text-decoration: none;
     padding: 10px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 500;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s; margin-bottom: 10px;
   }
   .ref-link:hover { opacity: 0.8; }
 
@@ -287,13 +288,13 @@
 
   <!-- Getting the Files -->
   <div class="section">
-    <h2><span class="icon">⬇️</span> Getting the Files</h2>
-    <p>All files are hosted on GitHub. Download them using one of the options below, then add your private key file to the same folder.</p>
+    <h2><span class="icon">&#x2B07;&#xFE0F;</span> Help Docs &mdash; Get the Files from GitHub</h2>
+    <p>All scripts are hosted publicly on GitHub. Download them using one of the options below, then copy your <strong>private.key</strong> (see Step 1) file into the same folder as the scripts.</p>
 
     <div class="aud-grid">
       <div class="aud-card sandbox" style="padding:20px 18px">
-        <div class="aud-label">📦 Download ZIP</div>
-        <p style="font-size:13px; color:var(--text); margin:8px 0 12px;">No Git required — just download and extract.</p>
+        <div class="aud-label">&#x1F4E6; Download ZIP</div>
+        <p style="font-size:13px; color:var(--text); margin:8px 0 12px;">No Git required &mdash; just download and extract.</p>
         <ol style="font-size:13px; color:var(--text-muted); padding-left:18px; line-height:2;">
           <li>Go to the GitHub repo link below</li>
           <li>Click the green <strong style="color:var(--text)">Code</strong> button</li>
@@ -309,7 +310,7 @@
       </div>
 
       <div class="aud-card prod" style="padding:20px 18px">
-        <div class="aud-label">🖥️ Clone with Git</div>
+        <div class="aud-label">&#x1F5A5;&#xFE0F; Clone with Git</div>
         <p style="font-size:13px; color:var(--text); margin:8px 0 12px;">If you have Git installed, run in PowerShell:</p>
         <div class="code-block" style="margin:0">
           <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
@@ -320,65 +321,99 @@ cd salesforce-jwt-bearer</pre>
     </div>
 
     <div class="callout info">
-      <span class="icon">ℹ️</span>
-      <p>After downloading, place your private key file (e.g. <code>server.key</code>) in the same folder as the scripts before running.</p>
+      <span class="icon">&#x2139;&#xFE0F;</span>
+      <p>After downloading, place your private key file (<code>private.key</code>) in the same folder as the scripts before running.</p>
     </div>
   </div>
 
   <!-- Prerequisites -->
   <div class="section">
-    <h2><span class="icon">✅</span> Prerequisites</h2>
-    <p>Choose <strong>one</strong> runtime — all three use the same <code>jwt.properties</code> config file:</p>
+    <h2><span class="icon">&#x2705;</span> Prerequisites</h2>
+    <p>Choose <strong>one</strong> runtime &mdash; all three use the same <code>jwt.properties</code> config file:</p>
     <div class="table-wrap" style="margin-bottom:16px">
       <table>
         <thead><tr><th>Runtime</th><th>Requirement</th><th>Verify</th></tr></thead>
         <tbody>
-          <tr><td>☕ <strong>Java</strong></td><td>JDK installed</td><td><code>javac -version</code></td></tr>
-          <tr><td>🟢 <strong>Node.js</strong></td><td>Node.js installed — no extra packages needed</td><td><code>node --version</code></td></tr>
-          <tr><td>🐍 <strong>Python</strong></td><td>Python 3 + <code>cryptography</code> package</td><td><code>python --version</code></td></tr>
+          <tr><td>&#x2615; <strong>Java</strong></td><td>JDK installed</td><td><code>javac -version</code></td></tr>
+          <tr><td>&#x1F7E2; <strong>Node.js</strong></td><td>Node.js installed &mdash; no extra packages needed</td><td><code>node --version</code></td></tr>
+          <tr><td>&#x1F40D; <strong>Python</strong></td><td>Python 3 + <code>cryptography</code> package</td><td><code>python --version</code></td></tr>
         </tbody>
       </table>
     </div>
     <div class="card">
       <ul class="prereq-list">
-        <li><span class="check">✓</span> Script file in the same folder as <code>jwt.properties</code> and your private key <code>.key</code> file</li>
-        <li><span class="check">✓</span> Private key in PKCS#8 PEM format — keys exported from Salesforce Certificate &amp; Key Management are already in this format</li>
-        <li><span class="check">✓</span> Your org's My Domain URL — find it in Salesforce Setup → <strong>My Domain</strong></li>
+        <li><span class="check">&#x2713;</span> Script file in the same folder as <code>jwt.properties</code> and your private key <code>.key</code> file</li>
+        <li><span class="check">&#x2713;</span> Private key in PKCS#8 PEM format &mdash; keys exported from Salesforce Certificate &amp; Key Management are already in this format</li>
+        <li><span class="check">&#x2713;</span> Your org's My Domain URL &mdash; find it in Salesforce Setup &rarr; <strong>My Domain</strong></li>
       </ul>
     </div>
   </div>
 
-  <!-- Configuration -->
+  <!-- Step 1 — Generate Keypair -->
   <div class="section">
-    <h2><span class="icon">⚙️</span> Configuration — jwt.properties</h2>
-    <p>All JWT parameters are stored in <code>jwt.properties</code>. Update this file with your org values before running.</p>
+    <h2><span class="icon">&#x1F511;</span> Step 1 &mdash; Client Generates Keypair (<code style="font-size:14px">private.key</code> + <code style="font-size:14px">public.crt</code>) via OpenSSL</h2>
+    <p>Run these commands in your terminal or PowerShell to generate an RSA keypair. The client sends only <code>public.crt</code> to the SF Admin &mdash; <strong><code>private.key</code> never leaves the client</strong>.</p>
+
+    <div class="callout info" style="margin-bottom:16px">
+      <span class="icon">&#x2139;&#xFE0F;</span>
+      <p><strong>Fallback method:</strong> Salesforce Certificate and Key Management &rarr; export JKS &rarr; convert to PEM &rarr; deliver private key via secure channel.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span>OpenSSL &mdash; Keypair Generation</span><span class="lang-tag bash">Bash</span></div>
+      <pre><span class="comment"># Step 1: Generate password-protected RSA key</span>
+openssl genrsa -des3 -passout pass:x -out private.pass.key 2048
+
+<span class="comment"># Step 2: Strip passphrase</span>
+openssl rsa -passin pass:x -in private.pass.key -out private.key
+
+<span class="comment"># Step 3: Remove intermediate key</span>
+rm private.pass.key
+
+<span class="comment"># Step 4: Create Certificate Signing Request</span>
+openssl req -new -key private.key -out private.csr
+
+<span class="comment"># Step 5: Generate self-signed certificate (365 days &mdash; cert expiration length can be updated)</span>
+openssl x509 -req -sha256 -days 365 -in private.csr -signkey private.key -out public.crt</pre>
+    </div>
+
+    <div class="callout warn">
+      <span class="icon">&#x26A0;&#xFE0F;</span>
+      <p>Send only <code>public.crt</code> to the SF Admin. <strong><code>private.key</code> must never leave your environment.</strong></p>
+    </div>
+  </div>
+
+  <!-- Step 2 — Configuration -->
+  <div class="section">
+    <h2><span class="icon">&#x2699;&#xFE0F;</span> Step 2 &mdash; Configure <code style="font-size:14px">jwt.properties</code></h2>
+    <p>Update the <code>jwt.properties</code> file with the values provided by the SF Admin:</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Property</th><th>Description</th><th>Where to find it</th></tr></thead>
+        <thead><tr><th>Property</th><th>Description</th><th>Where to get it</th></tr></thead>
         <tbody>
           <tr>
             <td><code>consumer_key</code></td>
-            <td>ECA Consumer Key — JWT <code>iss</code> (issuer)</td>
-            <td><span class="muted">Salesforce Setup → External Client Apps</span></td>
+            <td>ECA Consumer Key &mdash; JWT <code>iss</code> (issuer)</td>
+            <td><span class="muted">SF Admin &rarr; Setup &rarr; External Client Apps</span></td>
           </tr>
           <tr>
             <td><code>username</code></td>
-            <td>Salesforce integration username — JWT <code>sub</code> (subject)</td>
-            <td><span class="muted">Salesforce Setup → Users</span></td>
+            <td>Salesforce integration username &mdash; JWT <code>sub</code> (subject)</td>
+            <td><span class="muted">SF Admin &rarr; Setup &rarr; Users</span></td>
           </tr>
           <tr>
             <td><code>audience</code></td>
-            <td>Your org's My Domain URL — JWT <code>aud</code></td>
-            <td><span class="muted">Salesforce Setup → My Domain</span></td>
+            <td>Your org's My Domain URL &mdash; JWT <code>aud</code></td>
+            <td><span class="muted">SF Admin &rarr; Setup &rarr; My Domain</span></td>
           </tr>
           <tr>
             <td><code>private_key</code></td>
             <td>Path to your RS256 PEM private key file</td>
-            <td><span class="muted">e.g. <code>server.key</code></span></td>
+            <td><span class="muted"><code>private.key</code> (in the same folder)</span></td>
           </tr>
           <tr>
             <td><code>expiry</code></td>
-            <td>Token lifetime in seconds — Salesforce max is 180</td>
+            <td>Token lifetime in seconds &mdash; Salesforce max is 180</td>
             <td><span class="muted"><code>180</code> (recommended)</span></td>
           </tr>
         </tbody>
@@ -386,32 +421,32 @@ cd salesforce-jwt-bearer</pre>
     </div>
 
     <!-- Audience section -->
-    <h2 style="margin-top:32px"><span class="icon">🌐</span> Audience (<code style="font-size:14px">aud</code>) — My Domain URL</h2>
-    <p>Set <code>audience</code> to your org's <strong>My Domain URL</strong> — this is the recommended approach per Salesforce documentation. Do not use the generic <code>login.salesforce.com</code> or <code>test.salesforce.com</code> endpoints.</p>
+    <h2 style="margin-top:32px"><span class="icon">&#x1F310;</span> Audience (<code style="font-size:14px">aud</code>) &mdash; My Domain URL</h2>
+    <p>Set <code>audience</code> to your org's <strong>My Domain URL</strong> &mdash; this is the recommended approach per Salesforce documentation. Do not use the generic <code>login.salesforce.com</code> or <code>test.salesforce.com</code> endpoints.</p>
 
     <div class="aud-grid">
       <div class="aud-card sandbox">
-        <div class="aud-label">🧪 Sandbox</div>
+        <div class="aud-label">&#x1F9EA; Sandbox</div>
         <div class="aud-format">[MyDomain]--[SandboxName].sandbox.my.salesforce.com</div>
         <code class="aud-example">https://mycompany--qa.sandbox.my.salesforce.com</code>
       </div>
       <div class="aud-card prod">
-        <div class="aud-label">🚀 Production</div>
+        <div class="aud-label">&#x1F680; Production</div>
         <div class="aud-format">[MyDomain].my.salesforce.com</div>
         <code class="aud-example">https://mycompany.my.salesforce.com</code>
       </div>
     </div>
 
     <div class="callout info">
-      <span class="icon">ℹ️</span>
-      <p>Your My Domain URL can be found in Salesforce Setup → <strong>My Domain</strong>. Copy the full URL including <code>https://</code>.</p>
+      <span class="icon">&#x2139;&#xFE0F;</span>
+      <p>Your My Domain URL can be found in Salesforce Setup &rarr; <strong>My Domain</strong>. Copy the full URL including <code>https://</code>.</p>
     </div>
   </div>
 
-  <!-- PowerShell Commands -->
+  <!-- Step 3 — PowerShell Commands -->
   <div class="section">
-    <h2><span class="icon">💻</span> PowerShell Commands</h2>
-    <p>Navigate to your JWT folder first, then choose a runtime below:</p>
+    <h2><span class="icon">&#x1F4BB;</span> Step 3 &mdash; Generate JWT &amp; Exchange for Access Token</h2>
+    <p>Three runtime options are available &mdash; all use the same <code>jwt.properties</code> file. Run these commands in PowerShell/Bash:</p>
     <div class="code-block" style="margin-bottom:20px">
       <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
       <pre>cd C:\path\to\your\JWT\folder</pre>
@@ -419,9 +454,9 @@ cd salesforce-jwt-bearer</pre>
 
     <!-- Tab bar -->
     <div class="tab-bar">
-      <button class="tab-btn active" data-lang="java"   onclick="switchTab('java')">☕ Java</button>
-      <button class="tab-btn"        data-lang="node"   onclick="switchTab('node')">🟢 Node.js</button>
-      <button class="tab-btn"        data-lang="python" onclick="switchTab('python')">🐍 Python</button>
+      <button class="tab-btn active" data-lang="java"   onclick="switchTab('java')">&#x2615; Java</button>
+      <button class="tab-btn"        data-lang="node"   onclick="switchTab('node')">&#x1F7E2; Node.js</button>
+      <button class="tab-btn"        data-lang="python" onclick="switchTab('python')">&#x1F40D; Python</button>
     </div>
 
     <!-- Java tab -->
@@ -430,7 +465,7 @@ cd salesforce-jwt-bearer</pre>
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-body">
-            <strong>Compile — run once, or after changes to GenerateJWT.java</strong>
+            <strong>Compile &mdash; run once, or after changes to GenerateJWT.java</strong>
             <div class="code-block">
               <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
               <pre>javac GenerateJWT.java</pre>
@@ -446,7 +481,7 @@ cd salesforce-jwt-bearer</pre>
               <pre>java GenerateJWT --config jwt.properties</pre>
             </div>
             <div class="code-block">
-              <div class="code-header"><span>With verbose output — shows decoded claims</span><span class="lang-tag">PS</span></div>
+              <div class="code-header"><span>With verbose output &mdash; shows decoded claims</span><span class="lang-tag">PS</span></div>
               <pre>java GenerateJWT --config jwt.properties --verbose</pre>
             </div>
           </div>
@@ -477,8 +512,8 @@ cd salesforce-jwt-bearer</pre>
     <!-- Node.js tab -->
     <div class="tab-content" data-lang="node">
       <div class="callout info" style="margin-bottom:16px">
-        <span class="icon">ℹ️</span>
-        <p>No compile step required. Uses Node.js built-in <code>crypto</code> module — no external packages needed.</p>
+        <span class="icon">&#x2139;&#xFE0F;</span>
+        <p>No compile step required. Uses Node.js built-in <code>crypto</code> module &mdash; no external packages needed.</p>
       </div>
       <div class="steps">
         <div class="step">
@@ -490,7 +525,7 @@ cd salesforce-jwt-bearer</pre>
               <pre>node GenerateJWT.js --config jwt.properties</pre>
             </div>
             <div class="code-block">
-              <div class="code-header"><span>With verbose output — shows decoded claims</span><span class="lang-tag">PS</span></div>
+              <div class="code-header"><span>With verbose output &mdash; shows decoded claims</span><span class="lang-tag">PS</span></div>
               <pre>node GenerateJWT.js --config jwt.properties --verbose</pre>
             </div>
           </div>
@@ -524,7 +559,7 @@ cd salesforce-jwt-bearer</pre>
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-body">
-            <strong>Install dependency — run once</strong>
+            <strong>Install dependency &mdash; run once</strong>
             <div class="code-block">
               <div class="code-header"><span>PowerShell</span><span class="lang-tag">PS</span></div>
               <pre>pip install cryptography</pre>
@@ -540,7 +575,7 @@ cd salesforce-jwt-bearer</pre>
               <pre>python GenerateJWT.py --config jwt.properties</pre>
             </div>
             <div class="code-block">
-              <div class="code-header"><span>With verbose output — shows decoded claims</span><span class="lang-tag">PS</span></div>
+              <div class="code-header"><span>With verbose output &mdash; shows decoded claims</span><span class="lang-tag">PS</span></div>
               <pre>python GenerateJWT.py --config jwt.properties --verbose</pre>
             </div>
           </div>
@@ -571,15 +606,15 @@ cd salesforce-jwt-bearer</pre>
 
   <!-- jwt.io Alternative -->
   <div class="section">
-    <h2><span class="icon">🌐</span> Alternative: Generate JWT via jwt.io</h2>
-    <p>If you prefer a browser-based approach without running any code, you can use <a href="https://jwt.io" target="_blank" style="color:var(--blue)">jwt.io</a> to manually build and sign the JWT assertion.</p>
+    <h2><span class="icon">&#x1F310;</span> Alternative: Generate JWT via jwt.io</h2>
+    <p>Use this method for one-off tests or if you don't have a runtime installed. You can use <a href="https://jwt.io" target="_blank" style="color:var(--blue)">jwt.io</a> to manually build and sign the JWT assertion.</p>
 
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-body">
           <strong>Open jwt.io and select JWT Encoder</strong>
-          <p>Go to <a href="https://jwt.io" target="_blank" style="color:var(--blue)">https://jwt.io</a> → click the <strong>JWT Encoder</strong> tab → set algorithm to <strong>RS256</strong>.</p>
+          <p>Go to <a href="https://jwt.io" target="_blank" style="color:var(--blue)">https://jwt.io</a> &rarr; click the <strong>JWT Encoder</strong> tab &rarr; set algorithm to <strong>RS256</strong>.</p>
         </div>
       </div>
       <div class="step">
@@ -602,7 +637,7 @@ cd salesforce-jwt-bearer</pre>
         <div class="step-num">3</div>
         <div class="step-body">
           <strong>Calculate the <code>exp</code> value</strong>
-          <p>Open your browser's developer console (F12 → Console) and run:</p>
+          <p>Open your browser's developer console (F12 &rarr; Console) and run:</p>
           <div class="code-block">
             <div class="code-header"><span>Browser Console</span><span class="lang-tag">JS</span></div>
             <pre>Math.floor(Date.now() / 1000) + 180</pre>
@@ -614,7 +649,7 @@ cd salesforce-jwt-bearer</pre>
         <div class="step-num">4</div>
         <div class="step-body">
           <strong>Paste the Private Key</strong>
-          <p>Under <strong>Sign JWT</strong>, set <strong>Private Key Format</strong> to <code>PEM</code> and paste the full contents of your <code>server.key</code> file.</p>
+          <p>Under <strong>Sign JWT</strong>, set <strong>Private Key Format</strong> to <code>PEM</code> and paste the full contents of your <code>private.key</code> file.</p>
           <p>Confirm all three green indicators appear: <strong>Valid header</strong>, <strong>Valid payload</strong>, <strong>Valid private key</strong>.</p>
         </div>
       </div>
@@ -622,44 +657,44 @@ cd salesforce-jwt-bearer</pre>
         <div class="step-num">5</div>
         <div class="step-body">
           <strong>Copy the Encoded JWT</strong>
-          <p>The signed JWT assertion appears in the <strong>Encoded JWT</strong> panel on the right. Copy it — this is your assertion for the Salesforce token exchange.</p>
+          <p>The signed JWT assertion appears in the <strong>Encoded JWT</strong> panel on the right. Copy it &mdash; this is your assertion for the Salesforce token exchange.</p>
         </div>
       </div>
     </div>
 
     <div class="callout warn" style="margin-top:16px;">
-      <span class="icon">⚠️</span>
+      <span class="icon">&#x26A0;&#xFE0F;</span>
       <p><strong>jwt.io is a public tool.</strong> Do not paste production private keys into it. Use only for testing and validation with non-sensitive keys.</p>
     </div>
   </div>
 
   <!-- JWT Claims -->
   <div class="section">
-    <h2><span class="icon">🔑</span> JWT Claims</h2>
+    <h2><span class="icon">&#x1F511;</span> JWT Claims</h2>
     <p>The script automatically populates the following claims in the signed JWT:</p>
     <div class="claims-grid">
       <div class="claim-card">
-        <div class="claim-key">iss — Issuer</div>
+        <div class="claim-key">iss &mdash; Issuer</div>
         <div class="claim-desc">ECA Consumer Key from <code>jwt.properties</code></div>
       </div>
       <div class="claim-card">
-        <div class="claim-key">sub — Subject</div>
+        <div class="claim-key">sub &mdash; Subject</div>
         <div class="claim-desc">Salesforce integration username from <code>jwt.properties</code></div>
       </div>
       <div class="claim-card">
-        <div class="claim-key">aud — Audience</div>
+        <div class="claim-key">aud &mdash; Audience</div>
         <div class="claim-desc">Your org's My Domain URL from <code>jwt.properties</code></div>
       </div>
       <div class="claim-card">
-        <div class="claim-key">exp — Expiry</div>
-        <div class="claim-desc">Current Unix time + 180 s — equivalent to <code>Math.floor(Date.now()/1000) + 180</code></div>
+        <div class="claim-key">exp &mdash; Expiry</div>
+        <div class="claim-desc">Current Unix time + 180 s &mdash; equivalent to <code>Math.floor(Date.now()/1000) + 180</code></div>
       </div>
     </div>
   </div>
 
   <!-- Sample Response -->
   <div class="section">
-    <h2><span class="icon">📦</span> Sample Token Response</h2>
+    <h2><span class="icon">&#x1F4E6;</span> Sample Token Response</h2>
     <p>After a successful token exchange, Salesforce returns a JSON response:</p>
     <div class="code-block">
       <div class="code-header"><span>Response</span><span class="lang-tag json">JSON</span></div>
@@ -676,8 +711,8 @@ cd salesforce-jwt-bearer</pre>
         <thead><tr><th>Field</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td><span class="field-tag tag-green">access_token</span></td><td>The token to pass in every Salesforce API request</td></tr>
-          <tr><td><span class="field-tag tag-blue">instance_url</span></td><td>Base URL for all API calls — always use this, never hardcode the domain</td></tr>
-          <tr><td><span class="field-tag tag-amber">token_type</span></td><td>Always <code>Bearer</code> — used as the Authorization header prefix</td></tr>
+          <tr><td><span class="field-tag tag-blue">instance_url</span></td><td>Base URL for all API calls &mdash; always use this, never hardcode the domain</td></tr>
+          <tr><td><span class="field-tag tag-amber">token_type</span></td><td>Always <code>Bearer</code> &mdash; used as the Authorization header prefix</td></tr>
           <tr><td><span class="field-tag tag-subtle">scope</span></td><td>Permissions granted to this token by the connected app</td></tr>
         </tbody>
       </table>
@@ -686,11 +721,11 @@ cd salesforce-jwt-bearer</pre>
 
   <!-- Using the Access Token -->
   <div class="section">
-    <h2><span class="icon">🚀</span> Using the Access Token</h2>
+    <h2><span class="icon">&#x1F680;</span> Using the Access Token</h2>
     <p>Pass <code>access_token</code> as a <strong>Bearer</strong> token in the <code>Authorization</code> header of every Salesforce API request.</p>
 
     <div class="code-block">
-      <div class="code-header"><span>SOQL Query — PowerShell</span><span class="lang-tag">PS</span></div>
+      <div class="code-header"><span>SOQL Query &mdash; PowerShell</span><span class="lang-tag">PS</span></div>
       <pre><span class="comment"># Use $accessToken and $instanceUrl from the exchange step above</span>
 Invoke-RestMethod `
     -Method GET `
@@ -699,43 +734,53 @@ Invoke-RestMethod `
     </div>
 
     <div class="callout warn">
-      <span class="icon">⚠️</span>
+      <span class="icon">&#x26A0;&#xFE0F;</span>
       <p>The JWT assertion is valid for <strong>3 minutes only</strong>. Re-run the script to generate a fresh token whenever needed.</p>
     </div>
     <div class="callout info">
-      <span class="icon">ℹ️</span>
-      <p>Always use <code>instance_url</code> from the token response as your API base URL — never hardcode your org domain.</p>
+      <span class="icon">&#x2139;&#xFE0F;</span>
+      <p>Always use <code>instance_url</code> from the token response as your API base URL &mdash; never hardcode your org domain.</p>
     </div>
   </div>
 
   <!-- Reference -->
   <div class="section">
-    <h2><span class="icon">📖</span> Salesforce Reference</h2>
-    <a class="ref-link" href="https://help.salesforce.com/s/articleView?id=xcloud.remoteaccess_oauth_jwt_flow.htm&language=en_US&type=5" target="_blank">
-      <span>📄</span>
-      OAuth 2.0 JWT Bearer Flow for Server-to-Server Integration — Salesforce Help
-    </a>
+    <h2><span class="icon">&#x1F4D6;</span> Salesforce Reference</h2>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <a class="ref-link" href="https://help.salesforce.com/s/articleView?id=xcloud.remoteaccess_oauth_jwt_flow.htm&language=en_US&type=5" target="_blank">
+        <span>&#x1F4C4;</span>
+        OAuth 2.0 JWT Bearer Flow for Server-to-Server Integration
+      </a>
+      <a class="ref-link" href="https://help.salesforce.com/s/articleView?id=xcloud.configure_oauth_jwt_flow_external_client_apps.htm&language=en_US&type=5" target="_blank">
+        <span>&#x1F4C4;</span>
+        Configure a JWT Bearer Flow
+      </a>
+      <a class="ref-link" href="https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm" target="_blank">
+        <span>&#x1F4C4;</span>
+        Create a Private Key and Self-Signed Certificate
+      </a>
+    </div>
   </div>
 
   <!-- Notes -->
   <div class="section">
-    <h2><span class="icon">📋</span> Notes</h2>
+    <h2><span class="icon">&#x1F4CB;</span> Notes</h2>
     <div class="card">
       <ul class="notes-list">
-        <li>All three scripts share the same interface — <code>--config jwt.properties</code> works identically across Java, Node.js, and Python</li>
-        <li><strong>Java</strong>: No external libraries — uses built-in <code>java.security</code> package. Recompile only needed when <code>GenerateJWT.java</code> changes</li>
-        <li><strong>Node.js</strong>: No external packages — uses built-in <code>crypto</code> module. No compile step required</li>
+        <li>All three scripts share the same interface &mdash; <code>--config jwt.properties</code> works identically across Java, Node.js, and Python</li>
+        <li><strong>Java</strong>: No external libraries &mdash; uses built-in <code>java.security</code> package. Recompile only needed when <code>GenerateJWT.java</code> changes</li>
+        <li><strong>Node.js</strong>: No external packages &mdash; uses built-in <code>crypto</code> module. No compile step required</li>
         <li><strong>Python</strong>: Requires <code>cryptography</code> package (<code>pip install cryptography</code>). No compile step required</li>
-        <li>Private key must be in <strong>PKCS#8 PEM format</strong> — keys exported from Salesforce Certificate &amp; Key Management are already in this format</li>
-        <li>JWT is printed to stdout — safe to pipe or capture into a PowerShell variable</li>
-        <li>Signing algorithm: <strong>RS256</strong> (SHA-256 with RSA) — required by Salesforce JWT Bearer flow</li>
-        <li>Compatible with both <strong>Sandbox</strong> and <strong>Production</strong> orgs — set the correct My Domain URL in <code>jwt.properties</code></li>
+        <li>Private key must be in <strong>PKCS#8 PEM format</strong> &mdash; keys exported from Salesforce Certificate &amp; Key Management are already in this format</li>
+        <li>JWT is printed to stdout &mdash; safe to pipe or capture into a PowerShell variable</li>
+        <li>Signing algorithm: <strong>RS256</strong> (SHA-256 with RSA) &mdash; required by Salesforce JWT Bearer flow</li>
+        <li>Compatible with both <strong>Sandbox</strong> and <strong>Production</strong> orgs &mdash; set the correct My Domain URL in <code>jwt.properties</code></li>
       </ul>
     </div>
   </div>
 
   <div class="footer">
-    JWT Bearer Token Generator &nbsp;·&nbsp; Salesforce OAuth 2.0 JWT Bearer Flow &nbsp;·&nbsp; RS256
+    JWT Bearer Token Generator &nbsp;&middot;&nbsp; Salesforce OAuth 2.0 JWT Bearer Flow &nbsp;&middot;&nbsp; RS256
   </div>
 
 </div>
